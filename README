@@ -1,0 +1,6 @@
+
+required Python 3.10 and packages pyglet, tqdm, numpy, opensimplex, pyglm, pyglm-typing, pyshaders, mypy, numba
+
+can use ./install.ps1 to download packages
+
+python ./main.py to run

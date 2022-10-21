@@ -1,0 +1,12 @@
+Plugin architecture for loading:
+	Blocks
+	Items
+	Shaders
+	World Generators
+	AI Scripts
+
+Creature / AI Script serialisation
+
+INI support for general / graphics settings
+
+Improved performance for update_chunk stage
