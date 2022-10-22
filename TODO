@@ -7,6 +7,6 @@ Plugin architecture for loading:
 
 Creature / AI Script serialisation
 
-INI support for general / graphics settings
+~~INI support for general / graphics settings
 
 Improved performance for update_chunk stage

@@ -9,7 +9,7 @@ __all__ = [
 ]
 
 from .blocks import get_raycast_discrete_block_hits, get_sphere_blocks
-from .bufferdomain import colour_data, tex_coord
+from .bufferdomain import tex_coord
 from .constants import DIRECTIONS, Colour, Normal, Vertex
 from .generators import xy_range, xyz_range
 from .rng import choice, prob, random_rgb, random_rgba

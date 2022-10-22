@@ -2,16 +2,16 @@
 from __future__ import annotations
 
 import time
+from configparser import ConfigParser
 from math import cos, radians, sin
 
 import glm
-import maths
-from maths.constants import Colour
 import model
 import pyglet  # type: ignore
 import pyshaders  # type: ignore
 from blocks.blocks import AIR, LOG, WATER
 from maths import get_raycast_discrete_block_hits
+from maths.constants import Colour
 from pyglet import clock  # type: ignore
 from pyglet import gl, graphics, shapes
 from pyglet.window import key, mouse  # type: ignore
@@ -27,6 +27,13 @@ block_shader = load_shader("block")
 water_shader = load_shader("water")
 creature_shader = load_shader("creature")
 
+config = ConfigParser()
+with open("./displaysettings.ini", "r") as config_file:
+    config.read_file(config_file)
+
+LIGHT_SOURCE = [config.getfloat("SCENE", f"LightSource{n}", fallback=0.57735) for n in "XYZ"]
+
+
 class DebugWindow(pyglet.window.Window):
 
     __fps_display: pyglet.window.FPSDisplay
@@ -39,9 +46,9 @@ class DebugWindow(pyglet.window.Window):
     _captured_mouse: bool = False
     camera_position: list[float] = [20., 32., 16.]
     camera_rotation: list[float] = [180., -40.]
-    camera_speed: float = 20.
+    camera_speed: float = config.getfloat("DEBUG_WINDOW", "CameraSpeed")
     keys: set[int] = set()
-    sensitivity: float = 0.04
+    sensitivity: float = config.getfloat("DEBUG_WINDOW", "Sensitivity")
     creature_update_period: float = 1.
 
     __water_rect: shapes.Rectangle
@@ -174,7 +181,7 @@ class DebugWindow(pyglet.window.Window):
 
         block_shader.use()
         
-        n = glm.normalize((0.57735, 0.57735, 0.57735))
+        n = glm.normalize(LIGHT_SOURCE)
 
         block_shader.uniforms.texture_sampler = self.texture_id
         block_shader.uniforms.mvp = mvp

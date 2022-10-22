@@ -12,17 +12,6 @@ def l(a):
     return int(255 * a)
 
 @lru_cache(maxsize=256)
-def colour_data(a: float = 1) -> list[int]:
-    result = []
-    result.extend(ls16(l(0.9 * a)))
-    result.extend(ls16(l(0.5)))
-    result.extend(ls16(l(0.8)))
-    result.extend(ls16(l(0.55)))
-    result.extend(ls16(l(0.65)))
-    result.extend(ls16(l(0.7)))
-    return result
-
-@lru_cache(maxsize=256)
 def tex_coord(x: Number, y: Number, n: int=16) -> TextureGrid:
     """ Return the bounding vertices of the texture square.
 
