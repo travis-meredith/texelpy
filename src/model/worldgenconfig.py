@@ -4,8 +4,8 @@ from typing import Callable, Protocol, TypeAlias
 
 from blocks import BlockProtocol
 from blocks.blocks import (AIR, APPLE_LEAVES, BERRY_BUSH, CLAY,  # type: ignore
-                           CORNFLOWER, DIRT, GRASS, LEAVES, POPPY, STONE,
-                           TALL_GRASS, Log, Sand, Water)
+                           CORNFLOWER, DIRT, GRASS, LEAVES, LOG, POPPY, SAND, STONE,
+                           TALL_GRASS, WATER)
 
 TileProvider: TypeAlias = Callable[[], BlockProtocol]
 
@@ -77,10 +77,10 @@ class DefaultWorldGenerationConfig(WorldGenerationConfigProtocol):
     subterranean_tile = DIRT
     surface_tile = GRASS
 
-    water_tile_provider = Water
-    subaqua_tile_provider = Sand
+    water_tile_provider = lambda: WATER
+    subaqua_tile_provider = lambda: SAND
     water_feature_tile_provider = lambda: random.choice([CLAY, DIRT, STONE])
-    log_tile_provider = Log
+    log_tile_provider = lambda: LOG
     leaves_tile_provider = lambda: random.choice([
         LEAVES, LEAVES, LEAVES, LEAVES,
         LEAVES, LEAVES, LEAVES, LEAVES,
