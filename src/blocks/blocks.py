@@ -1,8 +1,7 @@
 
-from .blockprotocol import BlockProtocol, DrawStyle, ItemProtocol
+from .blockprotocol import BlockProtocol, DrawStyle
 from . import items
 from .blockprotocol import TextureGroup as TG
-from dataclasses import dataclass
 
 # air
 AIR = BlockProtocol(True, True, None, None, DrawStyle.BLOCK, None)

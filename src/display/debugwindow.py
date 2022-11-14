@@ -16,11 +16,12 @@ from pyglet import clock  # type: ignore
 from pyglet import gl, graphics, shapes
 from pyglet.window import key, mouse  # type: ignore
 
-from display import gl_fixedfunction, glc
+from display import glc
 from display.constants import UV_CREATURE  # type: ignore
 
 from .shaders import load_shader
 
+# pyshaders transposes matrices passed to uniforms by default
 pyshaders.transpose_matrices(False)
 
 block_shader = load_shader("block")
@@ -32,7 +33,6 @@ with open("./displaysettings.ini", "r") as config_file:
     config.read_file(config_file)
 
 LIGHT_SOURCE = [config.getfloat("SCENE", f"LightSource{n}", fallback=0.57735) for n in "XYZ"]
-
 
 class DebugWindow(pyglet.window.Window):
 
@@ -64,7 +64,6 @@ class DebugWindow(pyglet.window.Window):
 
         self.__water_rect = shapes.Rectangle(0, 0, *self.get_size(), color=(0, 75, 180))
         self.__fps_display = pyglet.window.FPSDisplay(window=self)
-        
 
     @property
     def exclusive(self) -> bool:
@@ -106,65 +105,65 @@ class DebugWindow(pyglet.window.Window):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.on_mouse_motion(x, y, dx, dy)
 
-    def _on_draw(self):
-        self.clear()
-        gl_fixedfunction.set_3d(
-            *self.get_size(), 
-            *self.get_viewport_size(), 
-            *self.camera_rotation, 
-            *self.camera_position
-            )
-        glColor3d(1, 1, 1) # type: ignore
-
-        x, y, z = 0, 0, 0
-
-        sidecount = 0
-        vertices = []
-        texture_data = []
-        colour_data = []
-
-        batch = graphics.Batch()
-
-        n, m = 1.6, 0.4
-
-        def draw(side, dirs, textures):
-            nonlocal sidecount
-            vertices.extend([x+dirs[0],y+dirs[1],z+dirs[2], x+dirs[3],y+dirs[4],z+dirs[5], x+dirs[6],y+dirs[7],z+dirs[8], x+dirs[9],y+dirs[10],z+dirs[11]])
-            texture_data.extend(textures)
-            colour_data.extend(side)
-            sidecount += 1
-
-        for creature_wrapper in self.model.creatures:
-            creature, _ = creature_wrapper.creature, creature_wrapper.script
-            x, y, z = creature.loc
-            draw(Colour.LEFT, [m, n, m, -m, n, -m, -m, -n, -m, m, -n, m], UV_CREATURE)
-            draw(Colour.LEFT, [-m, n, m, m, n, -m, m, -n, -m, -m, -n, m], UV_CREATURE)
-            draw(Colour.LEFT, [-m, n, -m, m, n, m, m, -n, m, -m, -n, -m], UV_CREATURE)
-            draw(Colour.LEFT, [m, n, -m, -m, n, m, -m, -n, m, m, -n, -m], UV_CREATURE)
-
-        batch.add(sidecount * 4, GL_QUADS, self.model.group, # type: ignore
-            ('v3f/static', vertices), 
-            ('t2f/static', texture_data),
-            ("c4B/static", colour_data))
-            
-        self.model.batch.draw()
-        batch.draw()
-
-        gl_fixedfunction.set_3d_trans(
-            *self.get_size(),
-            *self.get_viewport_size()
-        )
-        self.model.batch_fluid.draw()
-        gl_fixedfunction.set_2d(
-            *self.get_size(),
-            *self.get_viewport_size()
-        )
-        if self.model.get_block((
-                round(self.camera_position[0]), 
-                round(self.camera_position[1]), 
-                round(self.camera_position[2]))) == WATER:
-            self.__water_rect.draw()
-        self.__fps_display.draw()
+#    def _on_draw(self):
+#        self.clear()
+#        gl_fixedfunction.set_3d(
+#            *self.get_size(), 
+#            *self.get_viewport_size(), 
+#            *self.camera_rotation, 
+#            *self.camera_position
+#            )
+#        glColor3d(1, 1, 1) # type: ignore
+#
+#        x, y, z = 0, 0, 0
+#
+#        sidecount = 0
+#        vertices = []
+#        texture_data = []
+#        colour_data = []
+#
+#        batch = graphics.Batch()
+#
+#        n, m = 1.6, 0.4
+#
+#        def draw(side, dirs, textures):
+#            nonlocal sidecount
+#            vertices.extend([x+dirs[0],y+dirs[1],z+dirs[2], x+dirs[3],y+dirs[4],z+dirs[5], x+dirs[6],y+dirs[7],z+dirs[8], x+dirs[9],y+dirs[10],z+dirs[11]])
+#            texture_data.extend(textures)
+#            colour_data.extend(side)
+#            sidecount += 1
+#
+#        for creature_wrapper in self.model.creatures:
+#            creature, _ = creature_wrapper.creature, creature_wrapper.script
+#            x, y, z = creature.loc
+#            draw(Colour.LEFT, [m, n, m, -m, n, -m, -m, -n, -m, m, -n, m], UV_CREATURE)
+#            draw(Colour.LEFT, [-m, n, m, m, n, -m, m, -n, -m, -m, -n, m], UV_CREATURE)
+#            draw(Colour.LEFT, [-m, n, -m, m, n, m, m, -n, m, -m, -n, -m], UV_CREATURE)
+#            draw(Colour.LEFT, [m, n, -m, -m, n, m, -m, -n, m, m, -n, -m], UV_CREATURE)
+#
+#        batch.add(sidecount * 4, GL_QUADS, self.model.group, # type: ignore
+#            ('v3f/static', vertices), 
+#            ('t2f/static', texture_data),
+#            ("c4B/static", colour_data))
+#            
+#        self.model.batch.draw()
+#        batch.draw()
+#
+#        gl_fixedfunction.set_3d_trans(
+#            *self.get_size(),
+#            *self.get_viewport_size()
+#        )
+#        self.model.batch_fluid.draw()
+#        gl_fixedfunction.set_2d(
+#            *self.get_size(),
+#            *self.get_viewport_size()
+#        )
+#        if self.model.get_block((
+#                round(self.camera_position[0]), 
+#                round(self.camera_position[1]), 
+#                round(self.camera_position[2]))) == WATER:
+#            self.__water_rect.draw()
+#        self.__fps_display.draw()
 
     def on_setup(self):
 

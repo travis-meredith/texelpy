@@ -1,10 +1,8 @@
 
-from typing import Protocol
 from .blockprotocol import Item, ItemProtocol
 
 class FoodProtocol(ItemProtocol):
     energy: int
-    
 
 class Stone(Item): pass
 class Log(Item): pass
